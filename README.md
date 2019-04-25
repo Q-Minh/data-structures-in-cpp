@@ -44,6 +44,7 @@ amateur implementations of classic data structures in c++
 ### currently implemented
 - hash table with separate chaining collision handling scheme
 - dictionary that extends map by allowing duplicate entries
+- array based fixed size ordered map (using vector)
 
 ## sets
 ### coming up next

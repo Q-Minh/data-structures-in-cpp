@@ -33,6 +33,7 @@ target_sources(tests
 		./priority_queue/adaptable_priority_queue.cpp
 		./map/separate_chaining_hash_table.cpp
 		./map/dictionary.cpp
+		./map/array_ordered_map.cpp
 	)
 
 # TODO: Add tests and install targets if needed.
