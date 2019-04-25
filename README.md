@@ -29,7 +29,7 @@ The tests are by no means complete, they are there to prove some minimal degree 
 In the future, I would like to add benchmarks comparing theory to practice, as well as try out different memory allocation schemes to try to preserve the simplicity of node-based linked data structures and obtain performance enhancements from optimizing cache temporal/spatial locality and avoiding memory fragmentation of node-based linked data structures.
 
 ## lists
-### currently implemented data structures are
+### currently implemented
 - singly linked list
 - doubly linked list
 - circular linked list
