@@ -45,23 +45,59 @@ public:
 		erase(it);
 	}
 
-	void erase(iterator_t const& it)
+	void erase(iterator_t& it)
 	{
 		vector_.erase(it);
 	}
 
+	iterator_t greater_than(key_type const& key)
+	{
+		return std::upper_bound(vector_.begin(), vector_.end(), key,
+			[](auto key, auto elem)
+		{
+			return key < elem.key();
+		});
+	}
+
+	iterator_t less_than(key_type const& key)
+	{
+		std::size_t first = lower_bound(key);
+		return first >= vector_.size() ? vector_.end() :
+			first == 0 ? vector_.end() :
+			vector_.begin() + first - 1;
+	}
+
 	iterator_t find(key_type const& key) 
 	{ 
-		return std::find_if(vector_.begin(), vector_.end(),
-			[&key](auto elem)
-			{
-				return elem.key() == key;
-			}
-		);
+		auto first = lower_bound(key);
+		return first >= vector_.size() ? vector_.end() : 
+			vector_[first].key() != key ? vector_.end() : 
+			vector_.begin() + first;
 	}
+
+protected:
+	std::size_t lower_bound(key_type const& key)
+	{
+		std::size_t i, first = 0, count, step;
+		count = vector_.size();
+
+		while (count > 0) {
+			i = first;
+			step = count / 2;
+			i += step;
+			if (vector_[i].key() < key) {
+				first = ++i;
+				count -= step + 1;
+			}
+			else
+				count = step;
+		}
+
+		return first;
+	}
+
 private:
 	std::vector<entry_t> vector_;
-
 };
 
 }

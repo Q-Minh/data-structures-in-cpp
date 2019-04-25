@@ -45,6 +45,14 @@ TEST_CASE("array_ordered_map maintains order and size coherently", "[array_order
 				REQUIRE(map.find(-4) == map.end());
 				REQUIRE(map.find(0) == map.end());
 			}
+			SECTION("greater_than and less_than are coherent")
+			{
+				REQUIRE(map.greater_than(3)->key() == 4);
+				REQUIRE(map.less_than(3)->key() == 2);
+				REQUIRE(map.greater_than(4) == map.end());
+				REQUIRE(map.less_than(4)->key() == 3);
+				REQUIRE(map.less_than(1) == map.end());
+			}
 			SECTION("erasing inexisting fails")
 			{
 				auto size = map.size();
@@ -73,6 +81,17 @@ TEST_CASE("array_ordered_map maintains order and size coherently", "[array_order
 						REQUIRE((it++)->key() == 3);
 						REQUIRE((it++)->key() == 4);
 						REQUIRE(it == map.end());
+					}
+					SECTION("greater_than and less_than are still coherent")
+					{
+						REQUIRE(map.greater_than(3)->key() == 4);
+						REQUIRE(map.less_than(3)->key() == 1);
+						REQUIRE(map.greater_than(4) == map.end());
+						REQUIRE(map.less_than(4)->key() == 3);
+						REQUIRE(map.less_than(1)->key() == -3);
+						REQUIRE(map.less_than(-3) == map.end());
+						REQUIRE(map.greater_than(-3)->key() == 1);
+						REQUIRE(map.greater_than(1)->key() == 3);
 					}
 					SECTION("adding another element throws")
 					{
