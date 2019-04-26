@@ -33,33 +33,28 @@ private:
 	bool terminal_;
 };
 
-template <class K, class V, std::size_t a = 2, std::size_t b = 4>
-class multi_way_node
+template <class K, class V, std::size_t a, std::size_t b>
+class multi_way_node : public array_ordered_map<K, V, b, multi_way_entry<K, V, a, b>>
 {
 public:
 	using entry_t = multi_way_entry<K, V, a, b>;
-	using terminal_entry_t = multi_way_entry<K, V, a, b>;
 	using map_t = array_ordered_map<K, V, b, entry_t>;
 	using key_type = typename entry_t::key_type;
 	using value_type = typename entry_t::value_type;
 	using node_ptr = typename entry_t::node_ptr;
 	using iterator_t = typename map_t::iterator_t;
 
-	std::size_t size() const { return map_.size(); }
-	bool empty() const { return map_.empty(); }
-
 	void insert(key_type const& key, value_type const& value)
 	{
-		map_.insert(key, value);
-	}
+		if (size() == b - 1)
+		{
 
-	iterator_t find(key_type const& key) { return map_.find(key); }
-	iterator_t greater_than(key_type const& key) { return map_.greater_than(key); }
-	iterator_t less_than(key_type const& key) { return map_.less_than(key); }
-	void erase(key_type const& key) { map_.erase(key); }
-	void erase(iterator_t it) { map_.erase(it); }
+		}
+		iterator_t inserted = inserter(key, value);
+		if (size() == b - 1) inserted->terminal_ = true;
+	}
 private:
-	map_t map_;
+
 };
 
 }

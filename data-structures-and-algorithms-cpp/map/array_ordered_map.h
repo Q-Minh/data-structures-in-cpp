@@ -27,15 +27,7 @@ public:
 	void insert(key_type const& key, value_type const& value)
 	{ 
 		if (size() == capacity) throw std::runtime_error("array already full");
-		vector_.insert(
-			std::find_if(vector_.cbegin(), vector_.cend(),
-				[&key](auto elem)
-				{
-					return elem.key() >= key;
-				}
-			),
-			entry_t(key, value)
-		);
+		inserter(key, value);
 	}
 
 	void erase(key_type const& key)
@@ -76,6 +68,18 @@ public:
 	}
 
 protected:
+	iterator_t inserter(key_type const& key, value_type const& value)
+	{
+		return vector_.insert(
+			std::find_if(vector_.cbegin(), vector_.cend(),
+			[&key](auto elem)
+			{
+				return elem.key() >= key;
+			}),
+			entry_t(key, value)
+		);
+	}
+
 	std::size_t lower_bound(key_type const& key)
 	{
 		std::size_t i, first = 0, count, step;
@@ -96,7 +100,6 @@ protected:
 		return first;
 	}
 
-private:
 	std::vector<entry_t> vector_;
 };
 
