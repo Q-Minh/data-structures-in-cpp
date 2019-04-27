@@ -21,7 +21,7 @@ struct key_value_pair
 	bool operator==(key_value_pair const& rhs) const { return key_ == rhs.key_ && value_ == rhs.value_; }
 	bool operator<(key_value_pair const& rhs) const { return key_ < rhs.key_; }
 	key_type key() const { return key_; }
-	value_type value() const { return value_; }
+	value_type& value() { return value_; }
 private:
 	template <class T, class U, class E>
 	friend class binary_search_tree;

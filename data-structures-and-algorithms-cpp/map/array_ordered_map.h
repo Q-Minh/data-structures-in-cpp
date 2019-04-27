@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <algorithm>
 #include <vector>
+#include <utility>
 #include "utils/utils.h"
 
 namespace data_structures_cpp {
@@ -26,7 +27,6 @@ public:
 	
 	void insert(key_type const& key, value_type const& value)
 	{ 
-		if (size() == capacity) throw std::runtime_error("array already full");
 		inserter(key, value);
 	}
 
@@ -68,15 +68,17 @@ public:
 	}
 
 protected:
-	iterator_t inserter(key_type const& key, value_type const& value)
+	template <class ...Args>
+	iterator_t inserter(key_type const& key, value_type const& value, Args&&... args)
 	{
+		if (size() == capacity) throw std::runtime_error("array already full");
 		return vector_.insert(
 			std::find_if(vector_.cbegin(), vector_.cend(),
 			[&key](auto elem)
 			{
 				return elem.key() >= key;
 			}),
-			entry_t(key, value)
+			entry_t(key, value, std::forward<Args>(args)...)
 		);
 	}
 
