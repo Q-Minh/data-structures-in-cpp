@@ -49,6 +49,7 @@ TEST_CASE("array_ordered_map maintains order and size coherently", "[array_order
 			{
 				REQUIRE(map.greater_than(3)->key() == 4);
 				REQUIRE(map.less_than(3)->key() == 2);
+				REQUIRE(map.less_than(100)->key() == 4);
 				REQUIRE(map.greater_than(4) == map.end());
 				REQUIRE(map.less_than(4)->key() == 3);
 				REQUIRE(map.less_than(1) == map.end());
@@ -100,5 +101,21 @@ TEST_CASE("array_ordered_map maintains order and size coherently", "[array_order
 				}
 			}
 		}
+	}
+	SECTION("array with elements (1,1), (2,2), (3,3), (4,4), (5,5) less_than is coherent")
+	{
+		data_structures_cpp::array_ordered_map<int, int, 5> map{};
+		map.insert(1, 1);
+		map.insert(2, 2);
+		map.insert(3, 3);
+		map.insert(4, 4);
+		map.insert(5, 5);
+
+		REQUIRE(map.less_than(1) == map.end());
+		REQUIRE(map.less_than(5)->key() == 4);
+		REQUIRE(map.less_than(4)->key() == 3);
+		REQUIRE(map.less_than(0) == map.end());
+		REQUIRE(map.less_than(6)->key() == 5);
+		REQUIRE(map.less_than(50)->key() == 5);
 	}
 }

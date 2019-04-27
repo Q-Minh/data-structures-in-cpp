@@ -54,9 +54,9 @@ public:
 	iterator_t less_than(key_type const& key)
 	{
 		std::size_t first = lower_bound(key);
-		return first >= vector_.size() ? vector_.end() :
-			first == 0 ? vector_.end() :
-			vector_.begin() + first - 1;
+		if (first >= vector_.size())	return vector_.begin() + (vector_.size() - 1);
+		if (first == 0)					return vector_.end();
+		return vector_.begin() + first - 1;
 	}
 
 	iterator_t find(key_type const& key) 

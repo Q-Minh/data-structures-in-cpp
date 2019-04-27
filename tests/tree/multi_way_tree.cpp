@@ -47,8 +47,8 @@ TEST_CASE("multi_way_node has coherent key sequencing", "[multi_way_tree]")
 			}
 			SECTION("multi_way tree node should not be able to overflow by 1 without throwing on exceeded capacity")
 			{
-				REQUIRE(tree_node->full());
 				REQUIRE_NOTHROW(tree_node->insert(150, 0, tree_node));
+				REQUIRE(tree_node->full());
 				REQUIRE(tree_node->size() == 4);
 			}
 			SECTION("erasing an entry should yield tree_node not full")
@@ -56,6 +56,13 @@ TEST_CASE("multi_way_node has coherent key sequencing", "[multi_way_tree]")
 				tree_node->erase(4);
 				REQUIRE_FALSE(tree_node->full());
 				REQUIRE(tree_node->size() == 2);
+			}
+			SECTION("clearing the node yields shared_ptr use count of 1")
+			{
+				auto count = tree_node.use_count();
+				tree_node->clear();
+				count = tree_node.use_count();
+				REQUIRE(count == 1);
 			}
 		}
 	}
@@ -72,13 +79,25 @@ TEST_CASE("multi_way_tree has coherent reads and writes", "[multi_way_tree]")
 		SECTION("inserting elements is possible")
 		{
 			tree.insert("i am minh", "a vietnamese");
-			REQUIRE(tree.size() == 1);
+			tree.insert("i am afsa", "a persian");
+			tree.insert("i am azeen", "a persian");
+			tree.insert("i am quoc-anh", "a father");
+			tree.insert("i am doan-tran", "a mother");
+			tree.insert("i am yahya", "a father");
+			tree.insert("i am shahnaz", "a mother");
+			REQUIRE(tree.size() == 7);
 			REQUIRE_FALSE(tree.empty());
 			SECTION("retrieving elements is possible")
 			{
 				auto it = tree.find("i am minh");
 				REQUIRE((*it).key() == "i am minh");
 				REQUIRE((*it).value() == "a vietnamese");
+				it = tree.find("i am quoc-anh");
+				REQUIRE((*it).key() == "i am quoc-anh");
+				REQUIRE((*it).value() == "a father");
+				it = tree.find("i am shahnaz");
+				REQUIRE((*it).key() == "i am shahnaz");
+				REQUIRE((*it).value() == "a mother");
 			}
 		}
 	}
