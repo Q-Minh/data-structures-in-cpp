@@ -46,13 +46,6 @@ public:
 	multi_way_tree& operator=(multi_way_tree const& rhs) = delete;
 	node_ptr& root() { return root_; }
 
-	~multi_way_tree() 
-	{ 
-		auto count = root_.use_count();
-		root_->clear();
-		count = root_.use_count();
-	}
-
 	std::size_t size() const { return size_; }
 	bool empty() const { return size() == 0; }
 	iterator_t begin() const { return root_->begin(); }
@@ -70,8 +63,9 @@ public:
 		if (empty())
 		{
 			v = root_;
-			// every time we insert an entry, we must make sure that the terminal is created
-			v->terminal().set_node(std::make_shared<node_t>());
+			// every time we insert an entry, we must make sure that the terminal's node is created
+			v->terminal()->set_node(std::make_shared<node_t>());
+			v->terminal()->set_context(v);
 		}
 		else
 		{
@@ -81,7 +75,7 @@ public:
 				iterator_t it = z->find(key);
 				z = finder(key, it->node());
 			}
-			node_ptr v = z->parent()->context();
+			v = z->parent()->context();
 		}
 
 		entry = v->insert(key, value, v);
@@ -102,7 +96,7 @@ protected:
 		node_ptr vp, vpp, parent_node;
 		
 		if (v == root_)	parent_node = std::make_shared<node_t>();
-		else						parent_node = v->parent()->context();
+		else			parent_node = v->parent()->context();
 		
 		iterator_t	removed = v->begin() + b / 2, 
 					first = v->begin(), 
@@ -119,17 +113,18 @@ protected:
 			moved_entry = vp->insert(first->key(), first->value(), vp);
 			moved_entry->set_node(first->node());
 		}
-		vp->terminal().set_node(removed->node());
+		vp->terminal()->set_node(removed->node());
+		vp->terminal()->set_context(vp);
 
 		for (; second != v->end(); ++second)
 		{
 			moved_entry = vpp->insert(second->key(), second->value(), vpp);
 			moved_entry->set_node(second->node());
 		}
-		vpp->terminal().set_node(v->terminal().node());
+		vpp->terminal()->set_node(v->terminal()->node());
+		vpp->terminal()->set_context(vpp);
 
-		v->clear(); // destroy v
-
+		if (v == root_) root_ = parent_node;
 		new_entry->set_node(vp);
 
 		if ((++new_entry) != parent_node->end())
@@ -138,8 +133,12 @@ protected:
 		}
 		else
 		{
-			parent_node->terminal().set_node(vpp);
+			parent_node->terminal()->set_node(vpp);
+			parent_node->terminal()->set_context(parent_node);
 		}
+
+		v->clear(); // destroy v
+		auto count = root_->terminal()->node()->terminal()->node().use_count();
 
 		return parent_node;
 	}
@@ -156,7 +155,7 @@ protected:
 		if (it != v->end())
 		{
 			++it; entry_t* entry;
-			if (it == v->end()) entry = &(v->terminal());
+			if (it == v->end()) entry = v->terminal();
 			else				entry = &(*it);
 			return finder(key, entry->node());
 		}
@@ -196,7 +195,7 @@ public:
 				// if the terminal entry points to a non-external node,
 				// the next entry to read is simply the terminal's node's
 				// first entry
-				entry_t* next_entry = &(context->terminal());
+				entry_t* next_entry = context->terminal();
 				if (next_entry->node()->external())
 				{
 					// go up until the next entry is not a terminal entry
@@ -205,7 +204,7 @@ public:
 					{
 						next_entry = context->parent();
 						context = context->parent()->context();
-					} while (context->parent() != nullptr && next_entry == &(context->terminal()));
+					} while (context->parent() != nullptr && next_entry == context->terminal());
 
 					entry_it_ = context->greater_than(current_key);
 				}

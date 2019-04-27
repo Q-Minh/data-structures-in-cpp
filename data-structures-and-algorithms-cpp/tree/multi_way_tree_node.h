@@ -33,18 +33,24 @@ public:
 
 	void construct(node_ptr context) { terminal_.set_context(context); }
 	iterator_t insert(key_type const& key, value_type const& value, node_ptr context) { return inserter(key, value, context); }
-	bool full() const { return size() >= b - 1; }
-	entry_t* parent() const { return parent_; }
-	void set_parent(entry_t* parent) 
-	{ 
-		if (parent != nullptr) parent_ = parent; 
+	bool full() const { return size() >= b; }
+	//entry_t* parent() const { return parent_; }
+	std::shared_ptr<entry_t> parent() { return parent_; }
+	//void set_parent(entry_t* parent) 
+	//{ 
+	//	if (parent != nullptr) parent_ = parent; 
+	//}
+	void set_parent(std::shared_ptr<entry_t> parent)
+	{
+		if (parent != nullptr) parent_ = parent;
 	}
 	bool external() const { return empty(); }
-	entry_t& terminal() { return terminal_; }
+	entry_t* terminal() { return &terminal_; }
 	void clear() { vector_.clear(); terminal_.~entry_t(); }
 
 private:
-	entry_t* parent_{ nullptr };
+	//entry_t* parent_{ nullptr };
+	std::shared_ptr<entry_t> parent_;
 	entry_t terminal_;
 };
 

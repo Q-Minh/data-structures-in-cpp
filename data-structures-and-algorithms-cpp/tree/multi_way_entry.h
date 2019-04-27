@@ -14,7 +14,8 @@ template <class K, class V, std::size_t min, std::size_t max>
 class multi_way_entry : public key_value_pair<K, 
 									std::pair<	V, 
 												std::shared_ptr< multi_way_node<K, V, min, max> >
-									>>
+									>>,
+						public std::enable_shared_from_this<multi_way_entry<K, V, min, max>>
 {
 public:
 	using node_ptr = std::shared_ptr< multi_way_node<K, V, min, max> >;
@@ -32,7 +33,7 @@ public:
 	void set_node(node_ptr node) 
 	{ 
 		key_value_pair_t::value().second = node; 
-		key_value_pair_t::value().second->set_parent(this);
+		key_value_pair_t::value().second->set_parent(shared_from_this());
 	}
 	node_ptr context() const { return node_context_; }
 	void set_context(node_ptr context) { node_context_ = context; }
