@@ -68,7 +68,7 @@ TEST_CASE("multi_way_node has coherent key sequencing", "[multi_way_tree]")
 			}
 		}
 	}
-}
+}			
 
 TEST_CASE("multi_way_tree has coherent reads and writes", "[multi_way_tree]")
 {
@@ -122,22 +122,86 @@ TEST_CASE("multi_way_tree has coherent reads and writes", "[multi_way_tree]")
 				tree.insert("x", "a");
 				tree.insert("y", "a");
 				tree.insert("z", "a");
-				SECTION("retrieving elements is still possible")
+				REQUIRE(tree.size() == 26);
+				SECTION("retrieving all elements is possible")
 				{
 					auto it = tree.find("a");
 					REQUIRE((*it)->key() == "a");
 					REQUIRE((*it)->value() == "a");
+					it = tree.find("b");
+					REQUIRE((*it)->key() == "b");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("c");
+					REQUIRE((*it)->key() == "c");
+					REQUIRE((*it)->value() == "a");
 					it = tree.find("d");
 					REQUIRE((*it)->key() == "d");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("e");
+					REQUIRE((*it)->key() == "e");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("f");
+					REQUIRE((*it)->key() == "f");
 					REQUIRE((*it)->value() == "a");
 					it = tree.find("g");
 					REQUIRE((*it)->key() == "g");
 					REQUIRE((*it)->value() == "a");
-					it = tree.find("z");
-					REQUIRE((*it)->key() == "z");
+					it = tree.find("h");
+					REQUIRE((*it)->key() == "h");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("i");
+					REQUIRE((*it)->key() == "i");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("j");
+					REQUIRE((*it)->key() == "j");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("k");
+					REQUIRE((*it)->key() == "k");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("l");
+					REQUIRE((*it)->key() == "l");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("m");
+					REQUIRE((*it)->key() == "m");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("n");
+					REQUIRE((*it)->key() == "n");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("o");
+					REQUIRE((*it)->key() == "o");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("p");
+					REQUIRE((*it)->key() == "p");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("q");
+					REQUIRE((*it)->key() == "q");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("r");
+					REQUIRE((*it)->key() == "r");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("s");
+					REQUIRE((*it)->key() == "s");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("t");
+					REQUIRE((*it)->key() == "t");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("u");
+					REQUIRE((*it)->key() == "u");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("v");
+					REQUIRE((*it)->key() == "v");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("w");
+					REQUIRE((*it)->key() == "w");
 					REQUIRE((*it)->value() == "a");
 					it = tree.find("x");
 					REQUIRE((*it)->key() == "x");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("y");
+					REQUIRE((*it)->key() == "y");
+					REQUIRE((*it)->value() == "a");
+					it = tree.find("z");
+					REQUIRE((*it)->key() == "z");
 					REQUIRE((*it)->value() == "a");
 				}
 			}

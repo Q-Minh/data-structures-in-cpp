@@ -44,7 +44,6 @@ public:
 	multi_way_tree(multi_way_tree const& rhs) = delete;
 	multi_way_tree(multi_way_tree&& rhs) = delete;
 	multi_way_tree& operator=(multi_way_tree const& rhs) = delete;
-	node_ptr root() { return root_; }
 
 	std::size_t size() const { return size_; }
 	bool empty() const { return size() == 0; }
