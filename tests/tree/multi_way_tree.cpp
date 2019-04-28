@@ -215,6 +215,10 @@ TEST_CASE("multi_way_tree has coherent reads and writes", "[multi_way_tree]")
 					tree.insert("gg", "a");
 					tree.insert("hh", "a");
 					tree.insert("ii", "a");
+					
+					// adding a duplicate!
+					tree.insert("ii", "a");
+
 					tree.insert("jj", "a");
 					tree.insert("kk", "a");
 					tree.insert("ll", "a");
@@ -232,7 +236,7 @@ TEST_CASE("multi_way_tree has coherent reads and writes", "[multi_way_tree]")
 					tree.insert("xx", "a");
 					tree.insert("yy", "a");
 					tree.insert("zz", "a");
-					REQUIRE(tree.size() == 52);
+					REQUIRE(tree.size() == 53);
 					SECTION("retrieving all elements is possible")
 					{
 						auto it = tree.find("a");
