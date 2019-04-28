@@ -30,6 +30,7 @@ target_sources(tests
 		"./tree/avl_tree.cpp"
 		"./tree/multi_way_tree.cpp"
 		"./tree/multi_way_entry_ordered_map.cpp"
+		"./tree/multi_way_tree_node.cpp"
 		./priority_queue/list_priority_queue.cpp
 		./priority_queue/vector_priority_queue.cpp
 		./priority_queue/adaptable_priority_queue.cpp

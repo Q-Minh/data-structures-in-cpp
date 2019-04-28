@@ -10,7 +10,7 @@ TEST_CASE("multi_way_entry_ordered_map maintains order and size coherently", "[m
 {
 	SECTION("given an empty multi_way_entry_ordered_map of capacity 4")
 	{
-		auto node = std::make_shared<data_structures_cpp::multi_way_node<int, int, 2, 4>>();
+		auto node = std::make_shared<data_structures_cpp::multi_way_tree_node<int, int, 2, 4>>();
 		node->build();
 		REQUIRE(node->size() == 0);
 		REQUIRE(node->empty());
@@ -109,7 +109,7 @@ TEST_CASE("multi_way_entry_ordered_map maintains order and size coherently", "[m
 	}
 	SECTION("multi_way_entry_ordered_map with elements (1,1), (2,2), (3,3), (4,4), (5,5)")
 	{
-		auto node = std::make_shared<data_structures_cpp::multi_way_node<int, int, 3, 5>>();
+		auto node = std::make_shared<data_structures_cpp::multi_way_tree_node<int, int, 3, 5>>();
 		node->build();
 		node->insert(1, 1);
 		node->insert(2, 2);

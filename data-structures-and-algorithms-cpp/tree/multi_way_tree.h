@@ -15,7 +15,7 @@ template <class K, class V, std::size_t a = 2, std::size_t b = 4>
 class multi_way_tree
 {
 public:
-	using node_t = multi_way_node<K, V, a, b>;
+	using node_t = multi_way_tree_node<K, V, a, b>;
 	using entry_t = typename node_t::entry_t;
 	using map_t = typename node_t::map_t;
 	using key_type = typename node_t::key_type;
@@ -86,7 +86,16 @@ public:
 		++size_;
 	}
 
+	void erase(key_type const& key)
+	{
+		node_ptr entry_node = finder(key, root_);
+		if (entry_node->external()) throw std::runtime_error("no such entry with specified key");
+
+		/* we need to perform the possible fusions */
+	}
+
 protected:
+	// split's performance may be impacted if copied values are big
 	node_ptr split(node_ptr v)
 	{
 		node_ptr vp, vpp, parent_node;

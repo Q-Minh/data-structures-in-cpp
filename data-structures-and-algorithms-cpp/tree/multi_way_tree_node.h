@@ -12,7 +12,7 @@
 namespace data_structures_cpp {
 
 template <class K, class V, std::size_t a, std::size_t b>
-class multi_way_node : public std::enable_shared_from_this<multi_way_node<K, V, a, b>>
+class multi_way_tree_node : public std::enable_shared_from_this<multi_way_tree_node<K, V, a, b>>
 {
 public:
 	using entry_t = multi_way_entry<K, V, a, b>;
@@ -22,9 +22,9 @@ public:
 	using node_ptr = typename entry_t::node_ptr;
 	using iterator_t = typename map_t::iterator_t;
 
-	explicit multi_way_node(std::shared_ptr<entry_t> parent = nullptr) : parent_(parent), map_()
+	explicit multi_way_tree_node(std::shared_ptr<entry_t> parent = nullptr) : parent_(parent), map_()
 	{
-		static_assert(std::is_same_v<node_ptr, std::shared_ptr<multi_way_node>>, "entry type must have shared_ptr to node type");
+		static_assert(std::is_same_v<node_ptr, std::shared_ptr<multi_way_tree_node>>, "entry type must have shared_ptr to node type");
 		static_assert(std::is_same_v<key_type, K>, "node type must know entry's key type");
 		static_assert(std::is_same_v<value_type, V>, "node type must have same value_type as entry's value type");
 	}
