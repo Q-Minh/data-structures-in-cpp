@@ -29,6 +29,7 @@ public:
 	{}
 
 	value_type value() { return key_value_pair_t::value().first; }
+	void set_value(value_type const& value) { key_value_pair_t::value().first = value; }
 	node_ptr node() { return key_value_pair_t::value().second; }
 	void set_node(node_ptr node) 
 	{ 

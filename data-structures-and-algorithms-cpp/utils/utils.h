@@ -22,7 +22,9 @@ struct key_value_pair
 	bool operator<(key_value_pair const& rhs) const { return key_ < rhs.key_; }
 	key_type key() const { return key_; }
 	value_type& value() { return value_; }
-private:
+	void set_key(key_type const& key) { key_ = key; }
+	void set_value(value_type const& value) { value_ = value; }
+protected:
 	template <class T, class U, class E>
 	friend class binary_search_tree;
 	template <class T, class U, class Hasher>

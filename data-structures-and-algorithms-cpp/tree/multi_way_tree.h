@@ -92,6 +92,7 @@ public:
 		if (entry_node->external()) throw std::runtime_error("no such entry with specified key");
 
 		/* we need to perform the possible fusions */
+		eraser(key, entry_node);
 	}
 
 protected:
@@ -167,6 +168,129 @@ protected:
 		// the child node of the first entry of this node
 		node_ptr next = (*v->begin())->node();
 		return finder(key, next);
+	}
+
+	void eraser(key_type const& key, node_ptr v)
+	{
+		auto entry = *(v->find(key));
+		node_ptr right_most_node = right_most_internal_node_finder(entry->node());
+		auto right_most_entry = *( --(right_most_node->last()) );
+
+		// replace entry to remove with rightmost child's key/value
+		entry->set_key(right_most_entry->key());
+		entry->set_value(right_most_entry->value());
+
+		// remove old rightmost child's position
+		right_most_node->erase(right_most_entry);
+
+		auto parent_entry = right_most_node->parent();
+		auto parent_node = parent_entry->context();
+		std::size_t size = parent_node->size();
+
+		std::size_t index = 0;
+		while (parent_entry != parent_node->begin() + index) ++index;
+
+		// case where parent_node provides enough siblings left and right
+		if (size >= a && index > 0 && index < size)
+		{
+			auto right_sibling = *(parent_node->begin() + index + 1);
+			auto left_sibling = *(parent_node->begin() + index - 1);
+			// check if right sibling has more than 'a' entries
+			if (right_sibling->node()->size() >= a)
+			{
+				right_to_left_transfer(right_most_node, parent_node->begin() + index, right_sibling);
+			}
+			// check if left sibling has more than 'a' entries
+			else if (left_sibling->node()->size() >= a)
+			{
+				left_to_right_transfer(left_sibling, parent_node->begin() + index, right_most_node);
+			}
+			else
+			{
+				fusion();
+			}
+		}
+		else
+		{
+			// if sibling is on the left
+			if (index > 0)
+			{
+
+			}
+			// if sibling is on the right
+			else
+			{
+
+			}
+		}
+
+	}
+
+	void right_to_left_transfer(node_ptr left_node, iterator_t parent_entry_it, node_ptr right_node)
+	{
+		auto right_node_leftmost_entry_it = right_node->begin();
+		auto right_node_leftmost_child = (*right_node_leftmost_entry_it)->node();
+		
+		auto parent_entry = *parent_entry_it;
+
+		auto left_node_entry_key = parent_entry->key();
+		auto left_node_entry_value = parent_entry->value();
+		left_node->insert(left_node_entry_key, left_node_entry_value);
+
+		auto left_node_last_it = left_node->last();
+		(*left_node_last_it)->set_node(right_node_leftmost_child);
+
+		parent_entry->set_key((*right_node_leftmost_entry_it)->key());
+		parent_entry->set_value((*right_node_leftmost_entry_it)->value());
+		
+		right_node->erase(right_node_leftmost_entry_it);
+	}
+
+	void left_to_right_transfer(node_ptr left_node, iterator_t parent_entry_it, node_ptr right_node)
+	{
+		auto left_node_last_it = left_node->last();
+		auto left_node_rightmost_child = (*left_node_last_it)->node();
+		auto left_node_rightmost_entry_it = left_node_last_it - 1;
+
+		auto parent_entry = *parent_entry_it;
+
+		auto right_node_entry_key = parent_entry->key();
+		auto right_node_entry_value = parent_entry->value();
+		auto right_node_entry_it = right_node->insert(right_node_entry_key, right_node_entry_value);
+
+		(*right_node_entry_it)->set_node(left_node_rightmost_child);
+
+		parent_entry->set_key((*left_node_right_most_entry_it)->key());
+		parent_entry->set_value((*left_node_right_most_entry_it)->value());
+
+		left_node->erase(left_node_rightmost_entry_it);
+	}
+
+	void left_to_right_fusion(node_ptr left_node, iterator_t parent_entry_it, node_ptr right_node)
+	{
+
+	}
+
+	void right_to_left_fusion(node_ptr left_node, iterator_t parent_entry_it, node_ptr right_node)
+	{
+
+	}
+
+	node_ptr right_most_internal_node_finder(node_ptr subtree_root)
+	{
+		if (subtree_root->external()) return subtree_root->parent()->context();
+		iterator_t entry = subtree_root->last();
+		node_ptr node;
+		
+		for (; entry != subtree_root->begin(); --entry)
+		{
+			node = (*entry)->node();
+			if (!node->external()) return right_most_internal_node_finder(node);
+		}
+		// here, we know that entry is the begin iterator
+		node = (*entry)->node();
+		if (!node->external()) return right_most_internal_node_finder(node);
+		return subtree_root;
 	}
 
 private:
